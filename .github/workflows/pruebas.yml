@@ -1,0 +1,18 @@
+name: Compilar y probar Estudio Windows
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet run --project tests/Estudio.Tests -c Release
+      - run: dotnet publish src/Estudio.Windows -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: EstudioWindows-win-x64
+          path: dist/
